@@ -10,6 +10,7 @@ Used the language Ruby. Ruby version >= 2.5.1
   * Clone/Download this Repo.
   * Go to folder Question_2_Programming.
   * Then execute ``` bundle install ```
+  * Set value of ``` CSV_URL ``` in constants.rb to the URL of your CSV
   * Given no parameters, return the latest portfolio value per token in USD
       * Eg: run ``` ruby main_app.rb ```
       * Output Eg: 
