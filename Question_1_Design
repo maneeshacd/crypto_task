@@ -1,0 +1,87 @@
+ALGORITHM 1 (Count passengers in floor)
+-------------
+STEP 1: Start
+STEP 2: Assign floor details to FLOORS
+STEP 2: Repeat steps for each FLOOR IN FLOORS
+        2.1 Get image from camera and assign it to IMAGE
+        2.2 Count the number of passengers waiting using image processing
+            and assign it to PASSENGER_COUNT
+        2.3 Calculate the time waiting by first passenger WAITING_TIME
+        2.4 Assign PASSENGER_COUNT, WAITING_TIME to FLOOR
+STEP 5: Return FLOORS with corresponding PASSENGER_COUNT, WAITING_TIME
+STEP 5: End
+
+ALGORITHM 2 (Count passengers in Elevator)
+-------------
+STEP 1: Start
+STEP 2: Get elevator as input and assign it to ELEVATOR
+STEP 3: Get image from camera and assign it to IMAGE
+STEP 4: Count the number of passengers waiting using image processing
+        and assign it to PASSENGER_COUNT
+STEP 5: Return PASSENGER_COUNT
+STEP 5: End
+
+ALGORITHM 3 (Assign floors to moving elevators)
+-----------------------------------------------------
+STEP 1: Start
+STEP 2: Get direction as input and assign it to DIRECTION (can be 'up'/'down')
+STEP 2: Find elevators with direction DIRECTION by analysing elevator movement
+        and assign it to MOVING_ELEVATORS
+STEP 3: Sort MOVING_ELEVATORS in ASC/DESC order of its current floor number
+        (moving up elevators should be in ASC, moving down elevators should be
+         in DESC)
+STEP 4: Repeat steps for each ELEVATOR in MOVING_ELEVATORS
+        4.1 Get floors that are selected by the passengers inside ELEVATOR and
+            assign it to LIFT_STOPS
+        4.2 Get floors which are satisfying conditions below,
+            a) With buttons pressed in the direction of ELEVATOR
+            b) With passengers waiting - Apply ALGORITHM 1
+            c) With (passengers inside elevator + passengers in floor) not
+               exeeding max passenger capacity of elevator - Apply ALGORITHM 1
+               and ALGORITHM 2
+            d) IF DIRECTION == 'down'
+                 With floor_number <= next elevator near ELEVATOR (Sorted in DESC order for performing this condition)
+                 Example:
+                  MOVING_ELEVATORS = [2, 4] ( ie, Current floor numbers of
+                  elevators. first elevator position is at 2nd floor and second
+                  one is at position 4 )
+                  MOVING_ELEVATORS = MOVING_ELEVATORS.sort('DESC') -> [4, 2]
+                  So here, while considering the elevator at floor 4, it only needs to stop at floors pressed by the passengers inside the elevator + the floors selected by the passengers in floors before floor 2. Because from floor 2 the second elevator will serve for the passengers. That is the purpose of this condition [floor_number <= next elevator near ELEVATOR in d)]
+            d) IF DIRECTION == 'up'
+                 With floor_number >= next elevator near ELEVATOR (Sorted in ASC order for performing this condition)
+                 Example:
+                  MOVING_ELEVATORS = [8, 6] ( ie, Current floor numbers of
+                  elevators. first elevator position is at 8th floor and second
+                  one is at position 6th)
+                  MOVING_ELEVATORS = MOVING_ELEVATORS.sort('ASC') -> [6, 8]
+                  So here, while considering the elevator at floor 6, it only needs to stop at floors pressed by the passengers inside the elevator + the floors selected by the passengers in floors before floor 8. Because from floor 8, the second elevator will serve for the passengers. That is the purpose of this condition [floor_number >= next elevator near ELEVATOR in d)]
+        4.3 Append the floors satisfying these 4 conditions to LIFT_STOPS
+        4.4 Get uniq values from LIFT_STOPS (There is a chance of same floors
+            appearing multiple times)
+            LIFT_STOPS = LIFT_STOPS.uniq
+        4.5 Assign LIFT_STOPS for ELEVATOR
+STEP 5: Stop
+
+ALGORITHM 4 (Assign floors for free elevators)
+-----------------------------------------------
+STEP 1: Start
+STEP 2: Find free elevators and assign it to FREE_LIFTS
+STEP 3: Find passengers waiting floors with time they are waiting
+        and assign it to PASSENGER_WAITING_FLOORS - Apply ALGORITHM 1 for
+        getting this data
+STEP 4: Sort PASSENGER_WAITING_FLOORS in DESC order of waiting time.
+STEP 5: Repeat steps for each PASSENGER_WAITING_FLOOR IN
+        PASSENGER_WAITING_FLOORS
+          5.1 Find nearest elevator from FREE_LIFTS near to
+              PASSENGER_WAITING_FLOOR and assign to NEAREST_FREE_LIFT
+          5.2 Assign PASSENGER_WAITING_FLOOR to NEAREST_FREE_LIFT
+STEP 6: Stop
+
+ALGORITHM 5 (Main)
+---------------------
+STEP 1: Start
+STEP 2: IF BUTTON_PRESSED IN ANY FLOOR? || BUTTON_PRESSED INSIDE ANY LIFT?
+          ALGORITHM 3 (Assign floors to moving elevators)
+          ALGORITHM 4 (Assign floors for free elevators)
+        END
+STEP 3 Stop
